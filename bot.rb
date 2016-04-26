@@ -23,7 +23,7 @@ bot = Cinch::Bot.new do
     magazine_size = 6
     loaded = false
     bullet = nil
-    position = nil
+    position = 0
 
     on :channel, /^!rr$/ do |m|
       m.reply "Russian Roulette: To play, !load the gun, !spin the chamber, then !pull the trigger."
@@ -32,7 +32,7 @@ bot = Cinch::Bot.new do
     on :channel, /^!load$/ do |m|
       if !loaded
         m.reply "#{m.user.nick} loads the gun."
-        bullet = Random.rand(1...magazine_size + 1)
+        bullet = position
         loaded = true
       else
         m.reply "The gun is already loaded."
@@ -40,19 +40,13 @@ bot = Cinch::Bot.new do
     end
 
     on :channel, /^!spin$/ do |m|
-      if !loaded
-        m.reply "You must load the gun first!"
-      else
-        m.reply "#{m.user.nick} spins the drum."
-        position = Random.rand(1...magazine_size + 1)
-      end
+      m.reply "#{m.user.nick} spins the drum."
+      position = Random.rand(1...magazine_size + 1)
     end
 
     on :channel, /^!pull$/ do |m|
       if !loaded
         m.reply "You must load the gun first!"
-      elsif position == nil
-          m.reply "You must spin the drum first!"
       else
         if bullet == position
           m.reply action_string("shoots #{m.user.nick}.")
